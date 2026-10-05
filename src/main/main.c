@@ -53,25 +53,25 @@ int lerConfigsArquivo(FILE* fd,Configuracoes* configs, ConfigsRaylib* configs_te
 		parametro=linha;
 
 		valor=separador+1;
-
+		
 		switch(contador){
 			case 0:
-				configs->teste=strcmp(valor,"true")?true:false;
+				configs->teste=!strcmp(valor,"true\n");
 				break;
 			case 1:
 				configs->quantidade_valores=atoi(valor);
 				break;
 			case 2:
-				configs->ordenado=strcmp(valor,"true")?true:false;
+				configs->ordenado=!strcmp(valor,"true\n");
 				break;
 			case 3:
-				configs->crescente=strcmp(valor,"true")?true:false;
+				configs->crescente=!strcmp(valor,"true\n");
 				break;
 			case 4:
 				strcpy(configs->arquivo_saida,valor);
 				break;
 			case 5:
-				configs->visualizacao=(strcmp(valor,"barras"))?BARRAS:ARVORE;
+				configs->visualizacao=(!strcmp(valor,"barras\n"))?BARRAS:ARVORE;
 				break;
 			case 6:
 				configs_tela->largura=atoi(valor);
@@ -90,11 +90,31 @@ int lerConfigsArquivo(FILE* fd,Configuracoes* configs, ConfigsRaylib* configs_te
 		}
 		contador++;
 	}
-	
+
 	return 0;
 
 }
+int salvarEstatisticasArquivo(FILE* fd,Configuracoes configs, int comparacoes, double tempo){
 
+	fprintf(fd,
+			"Algoritmo: Busca Binaria\n"
+			"Elementos: %d\n"
+			"%s\n"
+			"Comparacoes: %d\n"
+			"Tempo: %f ms\n",
+			configs.quantidade_valores,(configs.ordenado==1)?(configs.crescente==1)?"Crescente":"Decrescente":"Aleatorio",comparacoes, tempo*1000);
+
+	return 0;
+}
+void calcularValoresIniciais(int* K,int N,int* l,int* u,int* i,int* k){
+	*l=0;
+	*u=N-1;
+
+	*i=(*l+*u)/2;
+
+	*k=K[rand()%N];
+
+}
 
 int busca_binaria(int* K, int* l,int* u, int* i, int k){
 	if(*u<*l) return 1;
@@ -125,21 +145,19 @@ int busca_binaria(int* K, int* l,int* u, int* i, int k){
 int main(){
 	srand(time(NULL));
 
-	Estado estado=CONFIGURANDO;
+	bool play=false;
+	bool step=false;
 
 	Configuracoes configuracoes_algoritmo;
 	ConfigsRaylib configuracoes_tela;
 
-	char resposta[256];
-	strcpy(resposta,"");
-
-	int resposta_ptr=0;
-
-	int opcao=1;
-
 	int w,h;
 
 	Color cor=SKYBLUE;
+
+	int comparacoes=0;
+	double prev_tempo=0;
+	double tempo=0;
 
 	//Ler aquivo contendo configuracoes
 	FILE* configuracoes_fd=fopen("./configuracoes.cfg","r");
@@ -166,15 +184,18 @@ int main(){
 	else{
 		strcpy(arquivo_valores,"./arquivos-valores/valores_aleatorio.bin");
 	}
+
 	FILE* valores_fd=fopen(arquivo_valores,"rb");
 int maior=lerValoresArquivo(valores_fd,&valores,configuracoes_algoritmo.quantidade_valores);
 	fclose(valores_fd);
 	
 	//Inicializando variaveis para o algoritmo
-	int indice_inferior=0;
-	int indice_superior=configuracoes_algoritmo.quantidade_valores-1;
-	int indice_medio = (indice_inferior+indice_superior)/2;
-	int alvo=valores[rand()%configuracoes_algoritmo.quantidade_valores];
+	int indice_inferior;
+	int indice_superior;
+	int indice_medio;
+
+	int alvo;
+	calcularValoresIniciais(valores,configuracoes_algoritmo.quantidade_valores,&indice_inferior,&indice_superior,&indice_medio,&alvo);
 
 	TraceLog(LOG_INFO,"Alvo: %d",alvo);
 
@@ -192,8 +213,9 @@ int maior=lerValoresArquivo(valores_fd,&valores,configuracoes_algoritmo.quantida
 				case 0://BARRAS
 //					desenharBarras();
 					
-					w=(float)(configuracoes_tela.largura-2*configuracoes_tela.margem)/configuracoes_algoritmo.quantidade_valores;
+					w=(configuracoes_tela.largura-2*configuracoes_tela.margem)/configuracoes_algoritmo.quantidade_valores;
 					h=(configuracoes_tela.altura-2*configuracoes_tela.margem);
+
 
 					for(int i=0;i<configuracoes_algoritmo.quantidade_valores;i++){
 						if(i==indice_inferior || i==indice_superior){
@@ -221,12 +243,44 @@ int maior=lerValoresArquivo(valores_fd,&valores,configuracoes_algoritmo.quantida
 			}
 			
 			//Rodar algoritmo
-			
-			busca_binaria(valores,&indice_inferior,&indice_superior,&indice_medio,alvo);
-	
-					if(valores[indice_medio]==alvo){
-				WaitTime(1);
+			int key=GetKeyPressed();
+			if(IsKeyPressed(KEY_SPACE) || key==KEY_SPACE){
+				play=!play;
+
 			}
+			if(IsKeyPressed(KEY_R) || key==KEY_R){
+				calcularValoresIniciais(valores,configuracoes_algoritmo.quantidade_valores,&indice_inferior,&indice_superior,&indice_medio,&alvo);
+				DrawText("\n\n\n\n\n\n\n\nReiniciando...",configuracoes_tela.margem,configuracoes_tela.margem,FONT_SIZE,FONT_COLOR);				
+				comparacoes=0;
+				tempo=0;
+			}
+			if(IsKeyPressed(KEY_S) || key==KEY_S){
+				step=true;
+			}
+			if((play || step) && valores[indice_medio]!=alvo){
+				prev_tempo=GetTime();
+				busca_binaria(valores,&indice_inferior,&indice_superior,&indice_medio,alvo);
+				tempo+=GetTime()-prev_tempo;
+				comparacoes++;
+				step=false;
+			}
+			else{
+				DrawText("\n\n\n\n\n\n\n\nPausado!",configuracoes_tela.margem,configuracoes_tela.margem,FONT_SIZE,FONT_COLOR);				
+			}
+			if(valores[indice_medio]==alvo){
+				WaitTime(1);
+				play=false;
+
+				if(configuracoes_algoritmo.teste){
+					FILE* estatistica_fd=fopen(configuracoes_algoritmo.arquivo_saida,"w");
+					if(estatistica_fd==NULL) return 1;
+
+					salvarEstatisticasArquivo(estatistica_fd,configuracoes_algoritmo,comparacoes,tempo);
+
+					fclose(estatistica_fd);
+				}
+			}
+			DrawText(TextFormat("Algoritmo: Busca Binaria\nElementos: %d\nComparacoes: %d\nTempo: %f ms\n\nEspaco para continuar/pausar\nR para reiniciar\nS para avancar um passo", configuracoes_algoritmo.quantidade_valores,comparacoes,tempo*1000),configuracoes_tela.margem,configuracoes_tela.margem,FONT_SIZE,FONT_COLOR);
 		EndDrawing();
 	}
 
