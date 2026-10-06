@@ -214,6 +214,8 @@ int maior=lerValoresArquivo(valores_fd,&valores,configuracoes_algoritmo.quantida
 //					desenharBarras();
 					
 					w=(configuracoes_tela.largura-2*configuracoes_tela.margem)/configuracoes_algoritmo.quantidade_valores;
+					w=(w>0) ? w : 1;
+
 					h=(configuracoes_tela.altura-2*configuracoes_tela.margem);
 
 
@@ -280,7 +282,7 @@ int maior=lerValoresArquivo(valores_fd,&valores,configuracoes_algoritmo.quantida
 					fclose(estatistica_fd);
 				}
 			}
-			DrawText(TextFormat("Algoritmo: Busca Binaria\nElementos: %d\nComparacoes: %d\nTempo: %f ms\n\nEspaco para continuar/pausar\nR para reiniciar\nS para avancar um passo", configuracoes_algoritmo.quantidade_valores,comparacoes,tempo*1000),configuracoes_tela.margem,configuracoes_tela.margem,FONT_SIZE,FONT_COLOR);
+			DrawText(TextFormat("Algoritmo: Busca Binaria\nElementos: %d\nComparacoes: %d\nTempo: %.4f ms\n\nEspaco para continuar/pausar\nR para reiniciar\nS para avancar um passo", configuracoes_algoritmo.quantidade_valores,comparacoes,tempo*1000),configuracoes_tela.margem,configuracoes_tela.margem,FONT_SIZE,FONT_COLOR);
 		EndDrawing();
 	}
 

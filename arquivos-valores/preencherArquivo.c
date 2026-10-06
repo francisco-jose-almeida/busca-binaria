@@ -22,26 +22,26 @@ int main(int argc, char* argv[]){
      }
 
 	 if(tipo=='c'){
-     	int valor=rand()%(10000/quantidade);
+     	int valor=rand()%(1000000/quantidade);
      	int soma;
 
     	 fprintf(arquivo_fd,"%d\n",valor);
 
      	for(int i=0;i<quantidade;i++){
-         	soma=rand()%(10000/quantidade);
+         	soma=rand()%(1000000/quantidade);
         	 valor+=soma;
 
        	  fprintf(arquivo_fd,"%d\n",valor);
      	}
 	 }
 	 else if(tipo=='d'){
-			int valor=10000-rand()%(10000/quantidade);
+			int valor=1000000-rand()%(1000000/quantidade);
      	int soma;
 
     	 fprintf(arquivo_fd,"%d\n",valor);
 
      	for(int i=0;i<quantidade;i++){
-         	soma=rand()%(10000/quantidade);
+         	soma=rand()%(1000000/quantidade);
         	 valor-=soma;
 
        	  fprintf(arquivo_fd,"%d\n",valor);
@@ -51,7 +51,7 @@ int main(int argc, char* argv[]){
 	 else if(tipo=='a'){
 		int valor;
 		for(int i=0;i<quantidade;i++){
-        	valor=rand()%10000;
+        	valor=rand()%1000000;
 
        		fprintf(arquivo_fd,"%d\n",valor);
      	}
