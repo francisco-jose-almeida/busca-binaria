@@ -55,8 +55,6 @@ int main(){
 
 	int w,h;
 
-	Color cor=SKYBLUE;
-
 	int comparacoes=0;
 	double prev_tempo=0;
 	double tempo=0;
@@ -102,7 +100,7 @@ int maior=lerValoresArquivo(valores_fd,&valores,configuracoes_algoritmo.quantida
 	TraceLog(LOG_INFO,"Alvo: %d",alvo);
 
 	SetTargetFPS(configuracoes_tela.fps);
-	
+
 	//Iniciar Raylib
 	InitWindow(configuracoes_tela.largura,configuracoes_tela.altura,"Algoritmo de Busca por Arvore Binaria");
 	while(!WindowShouldClose()){
@@ -113,7 +111,7 @@ int maior=lerValoresArquivo(valores_fd,&valores,configuracoes_algoritmo.quantida
 			//Desenhar tela
 			switch(configuracoes_algoritmo.visualizacao){
 				case 0://BARRAS
-					desenharBarras(valores,configuracoes_algoritmo.quantidade_valores,configuracoes_tela.largura,configuracoes_tela.altura,configuracoes_tela.margem,maior,indice_inferior,indice_superior,indice_medio, alvo);
+					desenharBarras(valores,configuracoes_algoritmo,configuracoes_tela,maior,indice_inferior,indice_superior,indice_medio, alvo);
 				break;
 				case 1://ARVORE
 //					desenharArvore();

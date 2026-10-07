@@ -5,6 +5,7 @@
 int main(int argc, char* argv[]){
 	srand(time(NULL));
 
+
      if(argc<2) {
          printf("Parametros insuficientes\n");
          return 1;
@@ -14,6 +15,8 @@ int main(int argc, char* argv[]){
      int tipo= (argc<3) ? 'c' : argv[2][0]; //c, d, a - crescente, decrescente, aleatorio
      int quantidade= (argc<4 ? 10 : atoi(argv[3]));
 
+	 int max=quantidade*quantidade;
+
      FILE* arquivo_fd=fopen(arquivo,"w");
 
      if(arquivo_fd == NULL) {
@@ -22,26 +25,26 @@ int main(int argc, char* argv[]){
      }
 
 	 if(tipo=='c'){
-     	int valor=rand()%(1000000/quantidade);
+     	int valor=rand()%(max/quantidade);
      	int soma;
 
     	 fprintf(arquivo_fd,"%d\n",valor);
 
      	for(int i=0;i<quantidade;i++){
-         	soma=rand()%(1000000/quantidade);
+         	soma=rand()%(max/quantidade);
         	 valor+=soma;
 
        	  fprintf(arquivo_fd,"%d\n",valor);
      	}
 	 }
 	 else if(tipo=='d'){
-			int valor=1000000-rand()%(1000000/quantidade);
+			int valor=max-rand()%(max/quantidade);
      	int soma;
 
     	 fprintf(arquivo_fd,"%d\n",valor);
 
      	for(int i=0;i<quantidade;i++){
-         	soma=rand()%(1000000/quantidade);
+         	soma=rand()%(max/quantidade);
         	 valor-=soma;
 
        	  fprintf(arquivo_fd,"%d\n",valor);
@@ -51,7 +54,7 @@ int main(int argc, char* argv[]){
 	 else if(tipo=='a'){
 		int valor;
 		for(int i=0;i<quantidade;i++){
-        	valor=rand()%1000000;
+        	valor=rand()%max;
 
        		fprintf(arquivo_fd,"%d\n",valor);
      	}
