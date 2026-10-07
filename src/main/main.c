@@ -4,108 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "arquivos.h"
 #include "../estruturas.h"
+#include "../visualizacoes/barras/barras.h"
 
-int lerValoresArquivo(FILE* fd, int** vetor,int quantidade){
-	
-	char linha[128];
-	int valor;
-	int contador=0;
-
-	int maior=0;
-
-	int *temp=realloc((*vetor),(quantidade)*sizeof(int));
-	
-	if(temp==NULL) return -1;
-
-	while(fgets(linha,sizeof(linha),fd)!=NULL && contador<quantidade){
-		valor=atoi(linha);
-		
-		temp[contador]=valor;
-		
-		if(valor>maior) maior=valor;
-
-		contador++;
-	}
-
-	(*vetor)=temp;
-
-	return maior;
-}
-int lerConfigsArquivo(FILE* fd,Configuracoes* configs, ConfigsRaylib* configs_tela){
-
-	char linha[128];
-	
-	char* parametro;
-	char* separador;
-	char* valor;
-
-	int contador=0;
-
-	while(fgets(linha,sizeof(linha),fd)!=NULL){
-
-		if(linha[0]=='\n' || linha[0]=='\r' || linha[0]=='\0') continue;
-
-		separador=strchr(linha,'=');
-
-		*separador='\0';
-
-		parametro=linha;
-
-		valor=separador+1;
-		
-		switch(contador){
-			case 0:
-				configs->teste=!strcmp(valor,"true\n");
-				break;
-			case 1:
-				configs->quantidade_valores=atoi(valor);
-				break;
-			case 2:
-				configs->ordenado=!strcmp(valor,"true\n");
-				break;
-			case 3:
-				configs->crescente=!strcmp(valor,"true\n");
-				break;
-			case 4:
-				strcpy(configs->arquivo_saida,valor);
-				break;
-			case 5:
-				configs->visualizacao=(!strcmp(valor,"barras\n"))?BARRAS:ARVORE;
-				break;
-			case 6:
-				configs_tela->largura=atoi(valor);
-				break;
-			case 7:
-				configs_tela->altura=atoi(valor);
-				break;
-			case 8:
-				configs_tela->fps=atof(valor);
-				break;
-			case 9:
-				configs_tela->margem=atoi(valor);
-				break;
-			default:
-				break;
-		}
-		contador++;
-	}
-
-	return 0;
-
-}
-int salvarEstatisticasArquivo(FILE* fd,Configuracoes configs, int comparacoes, double tempo){
-
-	fprintf(fd,
-			"Algoritmo: Busca Binaria\n"
-			"Elementos: %d\n"
-			"%s\n"
-			"Comparacoes: %d\n"
-			"Tempo: %f ms\n",
-			configs.quantidade_valores,(configs.ordenado==1)?(configs.crescente==1)?"Crescente":"Decrescente":"Aleatorio",comparacoes, tempo*1000);
-
-	return 0;
-}
 void calcularValoresIniciais(int* K,int N,int* l,int* u,int* i,int* k){
 	*l=0;
 	*u=N-1;
@@ -211,31 +113,8 @@ int maior=lerValoresArquivo(valores_fd,&valores,configuracoes_algoritmo.quantida
 			//Desenhar tela
 			switch(configuracoes_algoritmo.visualizacao){
 				case 0://BARRAS
-//					desenharBarras();
-					
-					w=(configuracoes_tela.largura-2*configuracoes_tela.margem)/configuracoes_algoritmo.quantidade_valores;
-					w=(w>0) ? w : 1;
-
-					h=(configuracoes_tela.altura-2*configuracoes_tela.margem);
-
-
-					for(int i=0;i<configuracoes_algoritmo.quantidade_valores;i++){
-						if(i==indice_inferior || i==indice_superior){
-							cor=ORANGE;
-						}
-						else if(i==indice_medio){
-							cor=BLUE;
-						}
-						else if(valores[i]==alvo){
-							cor=GREEN;
-						}
-						else{
-							cor=SKYBLUE;
-						}
-
-						DrawRectangle(configuracoes_tela.margem+i*w,configuracoes_tela.altura-configuracoes_tela.margem-((float)valores[i]/maior)*h,w,((float)valores[i]/maior)*h,cor);
-					}
-					break;
+					desenharBarras(valores,configuracoes_algoritmo.quantidade_valores,configuracoes_tela.largura,configuracoes_tela.altura,configuracoes_tela.margem,maior,indice_inferior,indice_superior,indice_medio, alvo);
+				break;
 				case 1://ARVORE
 //					desenharArvore();
 					break;

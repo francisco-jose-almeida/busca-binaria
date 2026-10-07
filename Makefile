@@ -1,6 +1,7 @@
 TARGET = a
 
 SRCS = src/main/main.c \
+	   src/main/arquivos.c \
 	   src/visualizacoes/barras/barras.c \
 	   src/visualizacoes/arvore/arvore.c 
 
