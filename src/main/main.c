@@ -8,59 +8,59 @@
 #include "../estruturas.h"
 #include "../visualizacoes/barras/barras.h"
 
-void calcularValoresIniciais(int* K,int N,int* l,int* u,int* i,int* k){
-	*l=0;
-	*u=N-1;
+void calcularValoresIniciais(int* K,int N,int* l,int* u,int* i,int* k){ //8+4+8+8+8+8=44
+	*l=0;	//	//c1
+	*u=N-1;	//	//c2
 
-	*i=(*l+*u)/2;
+	*i=(*l+*u)/2;	//	//c3
 
-	*k=K[rand()%N];
+	*k=K[rand()%N];	//	//c4
 
-}
+}//O(1)	//O(1)
 
-int busca_binaria(int* K, int* l,int* u, int* i, int k){
-	if(*u<*l) return 1;
+int busca_binaria(int* K, int* l,int* u, int* i, int k){i//8+8+8+8+4=36
+	if(*u<*l) return 1;// //c1
 	
 	//Verificar crescente/decrescente
-	if(K[*l]<=K[*u]){	//crescente
-		if(K[*i]<k){
-			*l=*i;
+	if(K[*l]<=K[*u]){	//crescente	//	//c2
+		if(K[*i]<k){	//	//c3
+			*l=*i;	//	//c4
 		}
-		else if(K[*i]>k){
-			*u=*i;
+		else if(K[*i]>k){	//	//c5
+			*u=*i;	//	//c6
 		}
 	}
-	else{	//descrescente
-		if(K[*i]<k){
-			*u=*i;
+	else{	//descrescente	//	//c7
+		if(K[*i]<k){//	//c8
+			*u=*i;	//c9
 		}
-		else if(K[*i]>k){
-			*l=*i;
+		else if(K[*i]>k){//	//c10
+			*l=*i;//	//c11
 		}
 	}
 
-	*i=(*l+*u)/2;
+	*i=(*l+*u)/2;//	//c12
 	
 	return 0;
-};
+};// O(0) // O(0)
 
 int main(){
 	srand(time(NULL));
 
-	bool play=false;
-	bool step=false;
+	bool play=false;	//1
+	bool step=false;	//1
 
-	Configuracoes configuracoes_algoritmo;
-	ConfigsRaylib configuracoes_tela;
+	Configuracoes configuracoes_algoritmo; //1+4+1+1+64+4=72
+	ConfigsRaylib configuracoes_tela; //4+4+4+4=16
 
-	int w,h;
+	int w,h;//4+4=8
 
-	int comparacoes=0;
-	double prev_tempo=0;
-	double tempo=0;
+	int comparacoes=0;//4
+	double prev_tempo=0;//4
+	double tempo=0;//4
 
 	//Ler aquivo contendo configuracoes
-	FILE* configuracoes_fd=fopen("./configuracoes.cfg","r");
+	FILE* configuracoes_fd=fopen("./configuracoes.cfg","r");//8
 	if(configuracoes_fd==NULL){
 		TraceLog(LOG_INFO,"Erro ao abrir configuracoes.cfg");
 	}
@@ -70,8 +70,8 @@ int main(){
 	
 	//Ler arquivo contendo valores
 	
-	int* valores=(int*)malloc(configuracoes_algoritmo.quantidade_valores*sizeof(int));
-	char arquivo_valores[64];
+	int* valores=(int*)malloc(configuracoes_algoritmo.quantidade_valores*sizeof(int));//quantidade_valore*4
+	char arquivo_valores[64];//1*64=64
 
 	if(configuracoes_algoritmo.ordenado){
 		if(configuracoes_algoritmo.crescente){
@@ -86,15 +86,15 @@ int main(){
 	}
 
 	FILE* valores_fd=fopen(arquivo_valores,"rb");
-int maior=lerValoresArquivo(valores_fd,&valores,configuracoes_algoritmo.quantidade_valores);
+int maior=lerValoresArquivo(valores_fd,&valores,configuracoes_algoritmo.quantidade_valores);//4
 	fclose(valores_fd);
 	
 	//Inicializando variaveis para o algoritmo
-	int indice_inferior;
-	int indice_superior;
-	int indice_medio;
+	int indice_inferior;//4
+	int indice_superior;//4
+	int indice_medio;//4
 
-	int alvo;
+	int alvo;//4
 	calcularValoresIniciais(valores,configuracoes_algoritmo.quantidade_valores,&indice_inferior,&indice_superior,&indice_medio,&alvo);
 
 	TraceLog(LOG_INFO,"Alvo: %d",alvo);
@@ -151,7 +151,7 @@ int maior=lerValoresArquivo(valores_fd,&valores,configuracoes_algoritmo.quantida
 				play=false;
 
 				if(configuracoes_algoritmo.teste){
-					FILE* estatistica_fd=fopen(configuracoes_algoritmo.arquivo_saida,"w");
+					FILE* estatistica_fd=fopen(configuracoes_algoritmo.arquivo_saida,"w");//8
 					if(estatistica_fd==NULL) return 1;
 
 					salvarEstatisticasArquivo(estatistica_fd,configuracoes_algoritmo,comparacoes,tempo);
@@ -170,4 +170,4 @@ int maior=lerValoresArquivo(valores_fd,&valores,configuracoes_algoritmo.quantida
 		free(valores);
 
 		return 0;
-}
+}//O(n) //O(nlog(n))
