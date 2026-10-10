@@ -46,7 +46,8 @@ O Raylib estará pronto para usar no terminal.
 
 O Algoritmo de Busca Binária funciona percorrendo uma arvore binária partindo da raiz que é o elemento exatamente no meio do vetor(K[i]), calculado como a media entre o limite superior(u) e o limite inferior(l)
 i=(u+l)/2
-Caso o valor K[i] seja menor que 
+Caso o valor K[i] seja menor que o valor buscado, considerando que o vetor está em ordem crescente, ao índice superior(u) será atribuído o índice médio (i), assim o índice é recalculado. De maneira similar, se K[i] > alvo, entao l=i e i é recalculado. Caso o vetor esteja em ordem decrescente, os sinais de maior e menor que são invertidos.
+Para todos os casos, se u<l significa que ocorreu um erro na busca, como se o valor buscado não existe no vetor. Por fim, se K[i]=alvo, a busca termina com sucesso.
 
 ## Referências
 - Knuth, Donald E. The Art of Computer Programming Volume 3, Cap. 6, Addison-Wesley Longman, 1989.
