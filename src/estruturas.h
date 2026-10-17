@@ -10,11 +10,6 @@
 //DEFININDO ESTRUTURAS
 
 typedef enum{
-	CONFIGURANDO,
-	RODANDO
-}Estado;
-
-typedef enum{
 	BARRAS,
 	ARVORE
 }Visualizacao;
@@ -36,3 +31,7 @@ typedef struct{
 }ConfigsRaylib;
 
 #endif
+
+
+
+
