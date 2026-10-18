@@ -48,7 +48,15 @@ O Algoritmo de Busca Binária funciona percorrendo uma arvore binária partindo 
 
 i=(u+l)/2
 
-Caso o valor K[i] seja menor que o valor buscado, considerando que o vetor está em ordem crescente, ao índice superior(u) será atribuído o índice médio (i) somado 1, assim o índice é recalculado. De maneira similar, se K[i] > alvo, entao l=i-1 e i é recalculado. Caso o vetor esteja em ordem decrescente, os sinais de maior e menor que são invertidos.
+Caso o valor K[i] seja menor que o valor buscado, considerando que o vetor está em ordem crescente, ao índice superior(u) será atribuído o índice médio (i) subtraido 1, assim o índice é recalculado.
+
+u=i-1
+
+De maneira similar, se K[i] > alvo, entao
+
+l=i+1
+
+e i é recalculado. Caso o vetor esteja em ordem decrescente, os sinais de maior e menor e as atibuições de l e u são invertidos.
 Para todos os casos, se u<l significa que ocorreu um erro na busca, como se o valor buscado não existe no vetor. Por fim, se K[i]=alvo, a busca termina com sucesso.
 
 ## Referências
