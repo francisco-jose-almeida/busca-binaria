@@ -14,7 +14,7 @@ void calcularValoresIniciais(int *K, int N, int *l, int *u, int *i, int *k){
 
 	*i = (*l + *u) / 2;
 
-	*k = K[rand() % N];
+	*k=K[rand() % N];
 }
 
 int busca_binaria(int *K, int *l, int *u, int *i, int k){
@@ -24,18 +24,18 @@ int busca_binaria(int *K, int *l, int *u, int *i, int k){
 	// Verificar crescente/decrescente
 	if (K[*l] <= K[*u]){ // crescente
 		if (K[*i] < k){
-			*l = *i;
+			*l = *i+1;
 		}
 		else if (K[*i] > k){
-			*u = *i;
+			*u = *i-1;
 		}
 	}
 	else{ // decrescente
 		if (K[*i] < k){
-			*u = *i;
+			*u = *i+1;
 		}
 		else if (K[*i] > k){
-			*l = *i;
+			*l = *i-1;
 		}
 	}
 
@@ -50,6 +50,7 @@ int main()
 
 	bool play = false;
 	bool step = false;
+	bool finalizado = false;
 
 	Configuracoes configuracoes_algoritmo;
 	ConfigsRaylib configuracoes_tela;
@@ -122,12 +123,28 @@ int main()
 			DrawText("\n\n\n\n\n\n\n\nReiniciando...", configuracoes_tela.margem, configuracoes_tela.margem, FONT_SIZE, FONT_COLOR);
 			comparacoes = 0;
 			tempo = 0;
+			finalizado = false;
 		}
 		if (IsKeyPressed(KEY_S) || key == KEY_S)
 		{
 			step = true;
 		}
-		if ((play || step)){
+
+		// Desenhar tela
+		switch (configuracoes_algoritmo.visualizacao)
+		{
+		case 0: // BARRAS
+			desenharBarras(valores, configuracoes_algoritmo, configuracoes_tela, maior, indice_inferior, indice_superior, indice_medio, alvo);
+			break;
+		case 1: // ARVORE
+			//					desenharArvore();
+			break;
+		default:
+			WaitTime(1);
+			break;
+		}
+
+		if ((play || step) && !finalizado){
 			prev_tempo = GetTime();
 			busca_binaria(valores, &indice_inferior, &indice_superior, &indice_medio, alvo);
 			tempo += GetTime() - prev_tempo;
@@ -136,7 +153,9 @@ int main()
 		}
 		if (valores[indice_medio] == alvo){
 			
-			play = false;
+			finalizado = true;
+
+			play = step = false;
 
 			DrawText("\n\n\n\n\n\n\n\nFinalizado!", configuracoes_tela.margem, configuracoes_tela.margem, FONT_SIZE, GREEN);
 			
@@ -154,21 +173,9 @@ int main()
 		else{
 			DrawText("\n\n\n\n\n\n\n\nPausado!", configuracoes_tela.margem, configuracoes_tela.margem, FONT_SIZE, FONT_COLOR);
 		}
-		DrawText(TextFormat("Algoritmo: Busca Binaria\nElementos: %d\nComparacoes: %d\nTempo: %.4f ms\n\nEspaco para continuar/pausar\nR para reiniciar\nS para avancar um passo", configuracoes_algoritmo.quantidade_valores, comparacoes, tempo * 1000), configuracoes_tela.margem, configuracoes_tela.margem, FONT_SIZE, FONT_COLOR);
+		DrawText(TextFormat("Algoritmo: Busca Binaria\nElementos: %d\nComparacoes: %d\nTempo: %.4lf ms\n\nEspaco para continuar/pausar\nR para reiniciar\nS para avancar um passo", configuracoes_algoritmo.quantidade_valores, comparacoes, tempo * 1000), configuracoes_tela.margem, configuracoes_tela.margem, FONT_SIZE, FONT_COLOR);
 
-		// Desenhar tela
-		switch (configuracoes_algoritmo.visualizacao)
-		{
-		case 0: // BARRAS
-			desenharBarras(valores, configuracoes_algoritmo, configuracoes_tela, maior, indice_inferior, indice_superior, indice_medio, alvo);
-			break;
-		case 1: // ARVORE
-			//					desenharArvore();
-			break;
-		default:
-			WaitTime(1);
-			break;
-		}
+		
 
 		EndDrawing();
 	}
